@@ -15,7 +15,8 @@ public:
 
     ATransform Inverse() const;
     void WriteToGLMatrix(float* m);						// turn rotational data into 4x4 opengl matrix 
-    void ReadFromGLMatrix(float* m);						// read rotational data from 4x4 opengl matrix
+    void ReadFromGLMatrix(float* m);		
+	// read rotational data from 4x4 opengl matrix
 
     vec3 RotTrans(const vec3& vecToTransform) const;    // transforms input vector using both rotation and translation components
 	vec3 Rotate(const vec3& vecToTransform) const;      // transforms input vector using only rotation component

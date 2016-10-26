@@ -30,12 +30,21 @@ ATransform& ATransform::operator = (const ATransform& orig)
 ATransform ATransform::Inverse() const
 {
 	ATransform result;
-
+	
 	// TODO: compute the inverse of a transform given the current rotation and translation components
+	mat3 Rtrans;
+	
+	for (int r = 0; r < 3; r++) {
+		for (int c = 0; c < 3; c++) {
+			Rtrans[r][c] = m_rotation[c][r];
+		}
+	}
 
+	vec3 Dnew = -Rtrans*m_translation;
 
- 
-
+	result.m_rotation = Rtrans;
+	result.m_translation = Dnew;
+	
 	return result;
 }
 
@@ -45,8 +54,8 @@ vec3 ATransform::RotTrans(const vec3& vecToTransform) const
 	vec3 result(0.0);
 
 	// TODO: Transform the input vector based on this transform's rotation and translation components
-
-
+	result = m_rotation*vecToTransform + m_translation;
+	//Is this correct?
 
  
 
@@ -59,8 +68,8 @@ vec3 ATransform::Rotate(const vec3& vecToTransform) const
 	vec3 result(0.0);
 
 	// TODO: Transform the input direction based on this transform's rotation component
-
-
+	result = m_rotation*vecToTransform;
+	//Is this correct?
 
  
 
@@ -72,13 +81,8 @@ vec3 ATransform::Translate(const vec3& vecToTransform) const
 	vec3 result(0.0);
 
 	// TODO: Transform the input vector based on this transform's translation component
-
-
-
- 
-
-	return result;
-
+	return m_translation + vecToTransform;
+	//IS this correct?
 }
 
 ATransform operator * (const ATransform& H1, const ATransform& H2)
@@ -86,10 +90,16 @@ ATransform operator * (const ATransform& H1, const ATransform& H2)
 	ATransform result;
 
 	// TODO: implement the equivalent of multiplying  H1 and H2 transformation matrices and return the result
-
-
-
- 
+	mat3 H3R = H1.m_rotation * H2.m_rotation;
+	
+	float H3x = H1.m_rotation[0][0] * H2.m_translation[0] + H1.m_rotation[0][1] * H2.m_translation[1] + H1.m_rotation[0][2] * H2.m_translation[2] + H1.m_translation[0];
+	float H3y = H1.m_rotation[1][0] * H2.m_translation[0] + H1.m_rotation[1][1] * H2.m_translation[1] + H1.m_rotation[1][2] * H2.m_translation[2] + H1.m_translation[1];
+	float H3z = H1.m_rotation[2][0] * H2.m_translation[0] + H1.m_rotation[2][1] * H2.m_translation[1] + H1.m_rotation[2][2] * H2.m_translation[2] + H1.m_translation[2];
+	
+	vec3 H3D(H3x, H3y, H3z);
+	
+	result.m_rotation = H3R;
+	result.m_translation = H3D;
 
 	return result;
 }
